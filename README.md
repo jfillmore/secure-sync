@@ -1,0 +1,41 @@
+Usage: secure-sync.sh [ARGUMENTS] PATH [PATH...] -- [...TAR_ARGS]
+
+Uploads or downloads an encrypted gzipped tarball. When uploading, all paths
+must be relative unless there is just one.
+
+Uploads:    PATH [...PATH] s3://(PATH/)?NAME  # multiple local paths may be used
+Downloads:  s3://(PATH/)?NAME PATH  # PATH = dir to download and extact files to
+
+Passing '--' causes all remaining arguments to be passed to "tar" on uploads.
+
+ARGUMENTS:
+
+  -d|--dry-run          Run without making any changes
+  -h|--help             This information
+  -v|--verbose          Print debugging information to stdout
+  --                    Remaining args are passed to "tar"
+
+ENV VARS:
+
+  SECURE_SYNC_KEY       Location of key file (only used during cert creation)  
+                        (default: $HOME/.secure-sync.key)
+  SECURE_SYNC_CRT       Location of certificate file for encrypt/decrypt
+                        (default: $HOME/.secure-sync.crt)
+  SECURE_SYNC_IGNORE    Location of file containing patterns (one-per-line) to
+                        ignore on uploads (default: $HOME/.secure-sync.ignore)
+
+EXAMPLES:
+
+# we'll need this to encrypt/decrypt data (path shown is default)
+# if it doesn't exist we'll be prompted to create it
+$ export SECURE_SYNC_KEY=~/.secure-sync.key  # only needed to generate a cert
+$ export SECURE_SYNC_CRT=~/.secure-sync.pem
+
+# upload just one dir
+$ secure-sync.sh ~/code s3://backups/code-apr-5-2020.ssdata
+
+# upload a few files/directories
+$ secure-sync.sh pictures/ scripts/ s3://backups/data-apr-5-2020.ssdata -- --exclude .*.sw?
+
+# download and extact saved data
+$ secure-sync.sh s3://backups/code-apr-5-2020.ssdata ~/code

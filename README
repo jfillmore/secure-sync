@@ -3,6 +3,8 @@ Usage: secure-sync.sh [ARGUMENTS] PATH [PATH...] -- [...TAR_ARGS]
 Uploads or downloads an encrypted gzipped tarball. When uploading, all paths
 must be relative unless there is just one.
 
+Requires the "aws" command-line tool and OpenSSL.
+
 Uploads:    PATH [...PATH] s3://(PATH/)?NAME  # multiple local paths may be used
 Downloads:  s3://(PATH/)?NAME PATH  # PATH = dir to download and extact files to
 
